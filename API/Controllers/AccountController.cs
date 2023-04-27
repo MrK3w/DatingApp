@@ -24,18 +24,19 @@ namespace API.Controllers
         [HttpPost("register")] //POST: api/account/register
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-
+            //if username has already been taken return bad request
             if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
 
             using var hmac = new HMACSHA512();
             
+            //create user with hashed passowrd
             var user = new AppUser
             {
                 UserName = registerDto.Username.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PaasswordSalt = hmac.Key
             };
-
+            //add user to database and save changes, we will return user with token
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return new UserDto
@@ -49,16 +50,17 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
+            //find user in database
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
             if (user == null) return Unauthorized();
             using var hmac = new HMACSHA512(user.PaasswordSalt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-
+            //check user password
             for (int i = 0; i < computedHash.Length; i++)
             {
                 if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
             }
-            
+            //return user DTO
             return new UserDto
             {
                 Username = user.UserName,
