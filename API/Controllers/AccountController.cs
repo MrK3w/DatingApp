@@ -34,7 +34,7 @@ namespace API.Controllers
             {
                 UserName = registerDto.Username.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                PaasswordSalt = hmac.Key
+                PasswordSalt = hmac.Key
             };
             //add user to database and save changes, we will return user with token
             _context.Users.Add(user);
@@ -53,7 +53,7 @@ namespace API.Controllers
             //find user in database
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
             if (user == null) return Unauthorized();
-            using var hmac = new HMACSHA512(user.PaasswordSalt);
+            using var hmac = new HMACSHA512(user.PasswordSalt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
             //check user password
             for (int i = 0; i < computedHash.Length; i++)

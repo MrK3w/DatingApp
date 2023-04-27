@@ -11,7 +11,7 @@ namespace API.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<byte[]>(
-                name: "PaasswordSalt",
+                name: "PasswordSalt",
                 table: "Users",
                 type: "BLOB",
                 nullable: true);
@@ -27,7 +27,7 @@ namespace API.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "PaasswordSalt",
+                name: "PasswordSalt",
                 table: "Users");
 
             migrationBuilder.DropColumn(

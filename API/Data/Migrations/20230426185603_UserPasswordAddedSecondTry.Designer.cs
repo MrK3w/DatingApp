@@ -25,7 +25,7 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte[]>("PaasswordSalt")
+                    b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("BLOB");
 
                     b.Property<byte[]>("PasswordHash")
