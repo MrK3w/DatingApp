@@ -52,13 +52,13 @@ namespace API.Controllers
         {
             //find user in database
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("User does not exists!");
             using var hmac = new HMACSHA512(user.PasswordSalt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
             //check user password
             for (int i = 0; i < computedHash.Length; i++)
             {
-                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
+                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password!");
             }
             //return user DTO
             return new UserDto
