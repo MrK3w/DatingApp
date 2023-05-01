@@ -17,6 +17,7 @@ namespace API.Extensions
             // We need it to for connection from client development
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserRepository, UserRepository>();
             return services;
         }
     }
